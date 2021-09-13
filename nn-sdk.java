@@ -15,14 +15,14 @@ public class nn_sdk {
 			pred_ids[i] = 0;
 		}
 	}
-
+	
 	//推理函数
 	public native static int  sdk_init_cc();
 	public native static int  sdk_uninit_cc();
 	public native static long sdk_new_cc(String json);
 	public native static int  sdk_delete_cc(long handle);
 	public native static int sdk_process_cc(long handle, int net_state, nn_sdk data);
-
+	
 	static {
 		//动态库的绝对路径windows是 engine_csdk.pyd , linux是 engine_csdk.so
 		System.load("E:\\algo_text\\nn_csdk\\build_py36\\Release\\engine_csdk.pyd");
@@ -30,34 +30,37 @@ public class nn_sdk {
 
 	public static void main(String[] args){  
 		System.out.println("java main...........");
-
+		
 	   nn_sdk instance = new nn_sdk();
 	   sdk_init_cc();
-
+	   //配置参考 python
 	   String json =  "{" + "\"model_dir\": \"E:/algo_text/nn_csdk/nn_csdk/py_test_ckpt/model.ckpt\"," + "\n" +
-	   "\"log_level\":4," + "\n" +
-	   "\"engine\":0," + "\n" +
-	   "\"model_type\":1, " + "\n" +
-	   "\"ConfigProto\": {" + "\n" +
-				 "\"log_device_placement\":false," + "\n" +
-	   "\"allow_soft_placement\":true," + "\n" +
-				 "\"gpu_options\":{\"allow_growth\": true}" + "\n" +
-	   "}," + "\n" +
-				 "\"graph_inf_version\": 1," + "\n" +
+	   "\"log_level\": 4," + "\n" +
+	   "\"engine\": 0," + "\n" +
+	   "\"device_id\": 0," + "\n" +
+	   "\"tf\":{ " + "\n" +
+           "\"ConfigProto\": {" + "\n" +
+                     "\"log_device_placement\":false," + "\n" +
+                      "\"allow_soft_placement\":true," + "\n" +
+                     "\"gpu_options\":{\"allow_growth\": true}" + "\n" +
+           "}," + "\n" +
+			"\"engine_version\": 1," + "\n" +
+			"\"model_type\":1, " + "\n" +
+	    "}" + "\n" +
 	   "\"graph\": [" + "\n" +
-				 "{" + "\n" +
-	   "\"input\": [{\"node\":\"input_ids:0\", \"data_type\":\"float\", \"shape\":[1, 20]}]," + "\n" +
-				 "\"output\" : [{\"node\":\"pred_ids:0\", \"data_type\":\"float\", \"shape\":[1, 20]}]" + "\n" +
-	"}" + "\n" +
-				 "]" + "\n" +
-	"}";
-
+				    "{" + "\n" +
+                        "\"input\": [{\"node\":\"input_ids:0\", \"data_type\":\"float\", \"shape\":[1, 20]}]," + "\n" +
+                        "\"output\" : [{\"node\":\"pred_ids:0\", \"data_type\":\"float\", \"shape\":[1, 20]}]" + "\n" +
+	                "}" + "\n" +
+		        "]" + "\n" +
+	    "}";
+				
 
 	  System.out.println(json);
-
+	   
 	  long handle = sdk_new_cc(json);
 	  System.out.println(handle);
-
+	   
 	  int code = sdk_process_cc(handle,0,instance);
 	  System.out.printf("sdk_process_cc %d \n" ,code);
 	  if(code == 0) {
