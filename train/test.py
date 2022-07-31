@@ -53,7 +53,7 @@ config = {
             },
             "graph_options":{
                 "optimizer_options":{
-                    "global_jit_level": 1
+                    "global_jit_level": 0
                 }
             },
         },
